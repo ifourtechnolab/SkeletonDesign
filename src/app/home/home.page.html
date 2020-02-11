@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="primary">Home</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-icon name="camera" color="primary" (click)="photoService.selectImage()"></ion-icon>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-icon name="trash" color="primary" (click)="photoService.deleteImage()"
+        *ngIf="photoService.arrSelected.length != 0">
+      </ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-toolbar slot="fixed">
+    <ion-segment [(ngModel)]="galleryType">
+      <ion-segment-button value="regular">
+        Regular
+      </ion-segment-button>
+      <ion-segment-button value="pinterest">
+        Pinterest
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
+  <div [ngSwitch]="galleryType" style="margin-top: 20px;" *ngIf="photoService.arrPhotos.length !== 0 && !isNoRecord">
+    <!-- Responsive Layout with Ion Grid-->
+    <ion-grid *ngSwitchCase="'regular'">
+      <ion-row>
+        <ion-col *ngFor="let objImg of photoService.arrPhotos">
+          <div class="photo-thumbnail">
+            <ion-thumbnail (click)="photoService.selectMultipleImage(objImg)">
+              <ion-img [src]="objImg.Path" [ngClass]="{'overlay-image': objImg.IsSelect}"></ion-img>
+            </ion-thumbnail>
+            <ion-icon name="checkmark" color="light" *ngIf="objImg.IsSelect"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Pinterest floating gallery style -->
+    <div class="images" *ngSwitchCase="'pinterest'">
+      <div class="one-image" *ngFor="let objImg of photoService.arrPhotos">
+        <ion-img [src]="objImg.Path"></ion-img>
+      </div>
+    </div>
+  </div>
+
+  <div [ngSwitch]="galleryType" style="margin-top: 20px;" *ngIf="photoService.arrPhotos.length == 0 && !isNoRecord">
+    <ion-grid *ngSwitchCase="'regular'">
+      <ion-row>
+        <ion-col *ngFor="let objImg of [1,2,3,4,5,6,7,8,9,10]">
+          <ion-thumbnail>
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-thumbnail>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="images" *ngSwitchCase="'pinterest'">
+      <div class="one-image" *ngFor="let objImg of [1,2,3,4,5,6,7,8,9,10]">
+        <div *ngIf="objImg % 2 == 0">
+          <ion-skeleton-text animated style="width: 160px; height: 160px"></ion-skeleton-text>
+        </div>
+        <div *ngIf="objImg % 2 != 0">
+          <ion-skeleton-text animated style="width: 160px; height: 185px"></ion-skeleton-text>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text">
+    <ion-text color="primary" *ngIf="isNoRecord">No images found.</ion-text>
+  </div>
+</ion-content>
